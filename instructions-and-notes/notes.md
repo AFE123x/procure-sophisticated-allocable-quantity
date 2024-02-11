@@ -13,7 +13,7 @@ void* malloc(size_t size);
 void free(void* p)
 ```
 ***malloc***
-- If malloc sucessfully finds memory to allocate, it will return the address to a memory block of the ***least size byte***
+- If malloc successfully finds memory to allocate, it will return the address to a memory block of the ***least size byte***
 - If malloc failed, like I failed my family, it will return NULL.
 ***free***
 - free returns the block pointed by B back to the pool of available memory. 
@@ -106,7 +106,7 @@ Sesh's mom would probably ask, what does this look like? Why does this work?
 
 ![Memory representation for find next block](images/Find%20next%20block%20illustration.png)
 
-- We can see that the struct points at address ***0x02***, or two in decimal, we cfor simplicity, let's assume each address is each address is one byte. The first allocation thing is allocating 2 bytes. To get to the next block:
+- We can see that the struct points at address ***0x02***, or two in decimal. For simplicity, let's assume each address is each address is one byte. The first allocation thing is allocating 2 bytes. To get to the next block:
     - We take 0x2, which block would be pointing at.
     - We take the size, which is 2
     - $0x02 + 2 = 0x04$, so we go to address 4, which is indeed where the next header is :-D
@@ -120,10 +120,10 @@ Sesh's mom would probably ask, what does this look like? Why does this work?
             - Pros: relatively fast
             - cons: memory fragmentation issues, poor utilization as memory
     - Next fit:
-        - instead of starting from the beginnincg, you can start from the first free space.
+        - instead of starting from the beginning, you can start from the first free space.
             - pros: Faster than first fit.
             - cons: fragmentation is bad. 
-    -best fit:
+    - Best fit:
         - find the smallest free chunk that can fit your data.
             - pros: Best memory utilization, keeping fragments small
             - cons: slower than the other two algorithms, doesn't guarantee optimality.
