@@ -1,8 +1,8 @@
 mymalloc: mymalloc.o memgrind.o
-	gcc -o mymalloc mymalloc.o memgrind.o
+	gcc -o mymalloc -g -Wall -std=c99 -fsanitize=address -fsanitize=undefined -Wvla mymalloc.o memgrind.o
 mymalloc.o: mymalloc.c
-	gcc -c mymalloc.c
+	gcc -c -g -Wall -std=c99 -fsanitize=address -fsanitize=undefined -Wvla  mymalloc.c
 memgrind.o: memgrind.c
-	gcc -c memgrind.c
+	gcc -c -g -Wall -std=c99 -fsanitize=address -fsanitize=undefined -Wvla memgrind.c
 clean:
 	rm *.o mymalloc
