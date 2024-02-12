@@ -1,8 +1,9 @@
 #include"mymalloc.h"
 #define MEMLENGTH 512
 static double memory[MEMLENGTH];
-void *mymalloc(long size, char *file, int line);
-
+void* mymalloc(size_t size, char *file, int line){
+    
+}
 // B#####################&&&&&&##BPP55PGBB#&&#BGGGGGBGGGGB5GGYGGPJG###B5B#####&#GB#&G??7GBPPGGB####GB###BGGGGGP?P&##B5B##PYB#GB#BG#####BGG5PBGB#BGG5G###B
 // #########&&&&&&&&&#&#####BBGGPPPGBB####&&#BGGGGGBBGGGGBPGPJGP?PB###PG########B##P??~?BGJPGB####BG####GGGGGGJ?P&##GPB##PP#BG##BGB#####GGPPBBB##BGG5B###
 // ##################BBBBGGGGBBB#####BBBGB#BGG5GGGBBBGGGBBGGP?P75B###B5B####BP&##&P?J!^PBY?GG###&PGB###BGGGGBY??G&##GB##BGB#BB###GB#####BGG5B#G##BGG5P###
