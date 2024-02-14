@@ -127,3 +127,30 @@ Sesh's mom would probably ask, what does this look like? Why does this work?
         - find the smallest free chunk that can fit your data.
             - pros: Best memory utilization, keeping fragments small
             - cons: slower than the other two algorithms, doesn't guarantee optimality.
+
+
+
+# Gameplan (crazy)
+
+- We want the memory to look like:
+```
++---+---+---+---+---+
+| H | P | P | P | P |
++---+---+---+---+---+
+```
+
+- H is our header, it'll be a simple ```size_t``` type.
+    - except for the 3 Least significant bits, we have our size.
+    - The three least sig bits will be for is allocated or not. 
+
++--------+
+|   4    |  <- return*
++--------+
+|   D    |
++--------+
+|   D    |
++--------+
+|   D    |
++--------+
+|        |
++--------+
