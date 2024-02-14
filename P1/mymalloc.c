@@ -1,9 +1,55 @@
 #include"mymalloc.h"
 #define MEMLENGTH 512
+//private static functions/variables
 static double memory[MEMLENGTH];
-void* mymalloc(size_t size, char *file, int line){
-    
+static size_t allocated_bit = 1; //just the last bit
+static size_t size_bit = -8; //excludes 3 least significant bits
+static unsigned char toinit_heap = 1; //for initializing heap
+static size_t max_size = MEMLENGTH * 8;
+static void initheap(){
+    memory[0] = (MEMLENGTH - 1) * 8; //if memlength is 512 this'll give 4088, which is divisible by 8
 }
+/**
+ * This function will check the allocated bit and determine if space is available
+ * Returns TRUE if space is available
+ * Returns FALSE if space is unavailable
+ */
+static bool isfree(size_t header){
+    return (header & allocated_bit) == 0;
+}
+
+/**
+ * get's the size of the header.
+ */
+static size_t get_size(size_t header){
+    return header & size_bit;
+}
+
+static void* bestfit(size_t size){
+    return NULL;
+}
+
+//public functions avaialable to client
+void* mymalloc(size_t size, char *file, int line){ 
+    //round up size to nearest 8th
+    size = (size + 7) & size_bit;
+    
+    //do we want to check if it's greater than size of heap?
+    
+    //check if heap has been initialized yet.
+    if(toinit_heap){
+        initheap();
+        toinit_heap = 0;
+    }
+
+    void* ptr = bestfit(size + 1); // +1 for our metadata.   
+  return NULL; 
+
+}
+void myfree(void* ptr, char* file, int line){
+
+}
+
 // B#####################&&&&&&##BPP55PGBB#&&#BGGGGGBGGGGB5GGYGGPJG###B5B#####&#GB#&G??7GBPPGGB####GB###BGGGGGP?P&##B5B##PYB#GB#BG#####BGG5PBGB#BGG5G###B
 // #########&&&&&&&&&#&#####BBGGPPPGBB####&&#BGGGGGBBGGGGBPGPJGP?PB###PG########B##P??~?BGJPGB####BG####GGGGGGJ?P&##GPB##PP#BG##BGB#####GGPPBBB##BGG5B###
 // ##################BBBBGGGGBBB#####BBBGB#BGG5GGGBBBGGGBBGGP?P75B###B5B####BP&##&P?J!^PBY?GG###&PGB###BGGGGBY??G&##GB##BGB#BB###GB#####BGG5B#G##BGG5P###
