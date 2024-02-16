@@ -18,7 +18,7 @@ static size_t get_size(void* ptr){
 
 //check if the the block/header is free
 static bool isFree(void* ptr){
-    return ((block_t*)ptr)->isFree == 0;
+    return ((block_t*)ptr)->isFree == true;
 } 
 
 
@@ -59,7 +59,7 @@ static void* bestfit(size_t size){
 
 //public functions available to client
 void* mymalloc(size_t size, char *file, int line){
-
+    size = (size + 7) & -8;
     // if the heap has not been initialized, initialize it
     if (heapInit) {
         block_t header;
@@ -74,11 +74,25 @@ void* mymalloc(size_t size, char *file, int line){
     void* destination = bestfit(size);
 
     if (destination == NULL) {
+        fprintf(stderr,"unsuccessful malloc D-:\n");        //implement error code for no valid memory location for malloc
         return NULL;
-        //implement error code for no valid memory location for malloc
     }
-
-return destination;
+    //saves old data from header for new header
+    size_t old_size = get_size(destination);
+    block_t* tempnextheader = get_next(destination);
+    //populating header with new data.
+    block_t* newheader = (block_t*)destination;
+    newheader->size = size;
+    newheader->isFree = 1;
+    //creating header after.
+    block_t mynewheader;
+    mynewheader.size = old_size - sizeof(block_t) - newheader->size;
+    mynewheader.next = tempnextheader;
+    mynewheader.prev = newheader;
+    //copies our data to memory.
+    void* address = memcpy(((char*)(newheader + 1) + newheader->size),&mynewheader,sizeof(block_t));
+    newheader->next = (block_t*)address;
+    return (block_t*)destination + 1;
 }
 
 
