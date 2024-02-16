@@ -22,12 +22,23 @@ static void* get_prev(void* ptr){
     return ((block_t*)ptr)->prev;
 }
 static void* bestfit(size_t size){
-    for(block_t* i = (block_t*)&memory[0]; &i < endindex; i = i->next){
+    void* toreturn = NULL;
+    size_t min = -1;
 
+    for(void* i = (void*)&memory[0]; i < endindex; i = get_next(i)) {
+        //condition 1. this chunk needs to fit the data we need
+        //condition 2. this space is straight up free
+        //condition 3. arbitrary max. if its less than arb then we set the max to that one and set the minimum that satisfies.
+        if (isFree(i) && (get_size(i) > size) && (get_size(i) < min)) {
+            size = get_size(i);
+            toreturn = i;
+        }   
     }
+
+    return toreturn;
 }
 
-//public functions avaialable to client
+//public functions available to client
 void* mymalloc(size_t size, char *file, int line){
 
     // if the heap has not been initialized, initialize it
@@ -38,8 +49,12 @@ void* mymalloc(size_t size, char *file, int line){
         header.next = endindex;
         memcpy(&memory[0], &header, sizeof(header));
         heapInit = false;
+        
     }
-    
+
+    void* destination = bestfit(size);
+
+return ;
 }
 
 
