@@ -2,51 +2,52 @@
 #define MEMLENGTH 512
 //private static functions/variables
 static double memory[MEMLENGTH];
-static size_t allocated_bit = 1; //just the last bit
-static size_t size_bit = -8; //excludes 3 least significant bits
-static unsigned char toinit_heap = 1; //for initializing heap
-static size_t max_size = MEMLENGTH * 8;
-static void initheap(){
-    memory[0] = (MEMLENGTH - 1) * 8; //if memlength is 512 this'll give 4088, which is divisible by 8
-}
-/**
- * This function will check the allocated bit and determine if space is available
- * Returns TRUE if space is available
- * Returns FALSE if space is unavailable
- */
-static bool isfree(size_t header){
-    return (header & allocated_bit) == 0;
-}
-
+static void* startindex = &memory[0];
+static void* endindex = &memory[MEMLENGTH]; 
+//determines if heap is initialized
+static bool heapInit = true;
 /**
  * get's the size of the header.
  */
-static size_t get_size(size_t header){
-    return header & size_bit;
+static size_t get_size(void* ptr){
+    return ((block_t*)ptr)->size;
 }
-
+static bool isFree(void* ptr){
+    return ((block_t*)ptr)->isFree == 0;
+} 
+static void* get_next(void* ptr){
+    return ((block_t*)ptr)->next;
+}
+static void* get_prev(void* ptr){
+    return ((block_t*)ptr)->prev;
+}
 static void* bestfit(size_t size){
-    return NULL;
+    for(block_t* i = (block_t*)&memory[0]; &i < endindex; i = i->next){
+
+    }
 }
 
 //public functions avaialable to client
-void* mymalloc(size_t size, char *file, int line){ 
-    //round up size to nearest 8th
-    size = (size + 7) & size_bit;
-    
-    //do we want to check if it's greater than size of heap?
-    
-    //check if heap has been initialized yet.
-    if(toinit_heap){
-        initheap();
-        toinit_heap = 0;
+void* mymalloc(size_t size, char *file, int line){
+
+    // if the heap has not been initialized, initialize it
+    if (heapInit) {
+        block_t header;
+        header.isFree = true;
+        header.size = (MEMLENGTH*8) - sizeof(block_t);
+        header.next = endindex;
+        memcpy(&memory[0], &header, sizeof(header));
+        heapInit = false;
     }
-
-    void* ptr = bestfit(size + 1); // +1 for our metadata.   
-  return NULL; 
-
+    
 }
+
+
 void myfree(void* ptr, char* file, int line){
+
+
+
+
 
 }
 
