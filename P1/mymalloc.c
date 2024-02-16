@@ -2,13 +2,6 @@
 #define MEMLENGTH 512
 //private static functions/variables
 static double memory[MEMLENGTH];
-static void* startindex = &memory[0];
-static void* endindex = &memory[MEMLENGTH]; 
-//determines if heap is initialized
-static bool heapInit = true;
-/**
- * get's the size of the header.
- */
 
 
 //get the size of the header/node
@@ -17,8 +10,9 @@ static size_t get_size(void* ptr){
 }
 
 //check if the the block/header is free
-static bool isFree(void* ptr){
-    return ((block_t*)ptr)->isFree == true;
+static char isFree(void* ptr){
+    block_t* temp = (block_t*)ptr;
+    return temp->isFree == 0;
 } 
 
 
@@ -32,6 +26,15 @@ static void* get_prev(void* ptr){
     return ((block_t*)ptr)->prev;
 }
 
+//functions create header
+static block_t make_header(int size, char isfree, void* next, void* prev){
+    block_t newhead;
+    newhead.size = size;
+    newhead.isFree = isfree;
+    newhead.next = next;
+    newhead.prev = prev;
+    return newhead;
+}
 //finding best free block to use for malloc
 static void* bestfit(size_t size){
     
@@ -41,7 +44,7 @@ static void* bestfit(size_t size){
     //2's compliment representation of size_t (values cannot be negative therefor -1 is b i g)
     size_t min = -1;
 
-    for(void* i = (void*)&memory[0]; i < endindex; i = get_next(i)) {
+    for(void* i = (void*)&memory[0]; i < (void*)&memory[MEMLENGTH]; i = get_next(i)) {
         //condition 1. this chunk needs to fit the data we need
         //condition 2. this space is straight up free
         //condition 3. arbitrary max. if its less than arb then we set the max to that one and set the minimum that satisfies.
@@ -50,25 +53,24 @@ static void* bestfit(size_t size){
             toreturn = i;
         }   
     }
-
+    printf("best address found: %p\n",toreturn);
     return toreturn;
 }
-
+static void printheader(block_t* input){
+    printf("At address %p\tsize: %zu\tisfree? %s\n",input,input->size,input->isFree == 0 ? "is free" : "is allocated");
+}
 
 
 
 //public functions available to client
 void* mymalloc(size_t size, char *file, int line){
     size = (size + 7) & -8;
-    // if the heap has not been initialized, initialize it
-    if (heapInit) {
-        block_t header;
-        header.isFree = true;
-        header.size = (MEMLENGTH*8) - sizeof(block_t);
-        header.next = endindex;
+   
+    if (memory[0] == 0) {
+
+        block_t header = make_header(((MEMLENGTH*8)-sizeof(block_t)),0,&memory[MEMLENGTH],NULL);
         memcpy(&memory[0], &header, sizeof(header));
-        heapInit = false;
-        
+        printheader((block_t*)&memory[0]);
     }
 
     void* destination = bestfit(size);
@@ -87,11 +89,11 @@ void* mymalloc(size_t size, char *file, int line){
     //creating header after.
     block_t mynewheader;
     mynewheader.size = old_size - sizeof(block_t) - newheader->size;
+    printf("new size of header: %zu\n",mynewheader.size);
     mynewheader.next = tempnextheader;
     mynewheader.prev = newheader;
     //copies our data to memory.
-    void* address = memcpy(((char*)(newheader + 1) + newheader->size),&mynewheader,sizeof(block_t));
-    newheader->next = (block_t*)address;
+    size_t* new_index = newheader + 
     return (block_t*)destination + 1;
 }
 
