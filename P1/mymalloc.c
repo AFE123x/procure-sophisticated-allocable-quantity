@@ -9,20 +9,36 @@ static bool heapInit = true;
 /**
  * get's the size of the header.
  */
+
+
+//get the size of the header/node
 static size_t get_size(void* ptr){
     return ((block_t*)ptr)->size;
 }
+
+//check if the the block/header is free
 static bool isFree(void* ptr){
     return ((block_t*)ptr)->isFree == 0;
 } 
+
+
+//get next header node in array
 static void* get_next(void* ptr){
     return ((block_t*)ptr)->next;
 }
+
+//get previous header node in array
 static void* get_prev(void* ptr){
     return ((block_t*)ptr)->prev;
 }
+
+//finding best free block to use for malloc
 static void* bestfit(size_t size){
+    
+    //pointer that returns the best fit location
     void* toreturn = NULL;
+    
+    //2's compliment representation of size_t (values cannot be negative therefor -1 is b i g)
     size_t min = -1;
 
     for(void* i = (void*)&memory[0]; i < endindex; i = get_next(i)) {
@@ -37,6 +53,9 @@ static void* bestfit(size_t size){
 
     return toreturn;
 }
+
+
+
 
 //public functions available to client
 void* mymalloc(size_t size, char *file, int line){
@@ -54,8 +73,15 @@ void* mymalloc(size_t size, char *file, int line){
 
     void* destination = bestfit(size);
 
-return ;
+    if (destination == NULL) {
+        return NULL;
+        //implement error code for no valid memory location for malloc
+    }
+
+return destination;
 }
+
+
 
 
 void myfree(void* ptr, char* file, int line){
