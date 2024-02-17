@@ -3,6 +3,33 @@
 //private static functions/variables
 static double memory[MEMLENGTH];
 
+//enum for error handling
+//NO_FREE_SPACE = mallocing a size that is not valid/ there is no more spance
+//FREE_UNKN_PTR = attempting to free a pointer that is not in the heap OR not directed at a header
+//DOUBLE_FREE = attempting to free a space that was already unallocated
+typedef enum {
+   NO_FREE_SPACE,
+   FREE_UNKN_PTR,
+   DOUBLE_FREE,
+   //there could possibly be more but I dont know what else for now
+} Errors;
+
+void errorHandling (Errors errorType,void* ptr,size_t size,char *file, int line) {
+    switch(errorType){
+        case NO_FREE_SPACE:
+        fprintf(stderr, "ERROR: There is not enough free space for this Malloc request. Try a smaller size or Free'ing");
+        break;
+
+        case FREE_UNKN_PTR:
+        fprintf(stderr, "ERROR: Pointing to unknown Malloc address. Try another Pointer");
+        break;
+
+        case DOUBLE_FREE:
+        fprintf(stderr, "ERROR: Ptr already Freed. Cannot be Freed again");
+        break;
+    }
+}
+
 
 //get the size of the header/node
 static size_t get_size(void* ptr){
@@ -75,10 +102,13 @@ void* mymalloc(size_t size, char *file, int line){
 
     void* destination = bestfit(size);
 
+    //could we put this logic inside of best fit?
     if (destination == NULL) {
         fprintf(stderr,"unsuccessful malloc D-:\n");        //implement error code for no valid memory location for malloc
+        errorHandling(NO_FREE_SPACE,destination,size,file,line);
         return NULL;
     }
+
     //saves old data from header for new header
     size_t old_size = get_size(destination);
     block_t* tempnextheader = get_next(destination);
@@ -101,8 +131,13 @@ void* mymalloc(size_t size, char *file, int line){
 
 
 void myfree(void* ptr, char* file, int line){
-
-
+    //this syntax doesnt work but the idea is
+    //errorhandling for double free
+    if (((block_t*)ptr--)->isFree) {
+        errorHandling(DOUBLE_FREE,ptr,0,file,line);
+        return 0;
+    }
+    //or something along those lines
 
 
 
