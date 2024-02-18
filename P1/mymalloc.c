@@ -17,16 +17,17 @@ typedef enum {
 void errorHandling (Errors errorType,void* ptr,size_t size,char *file, int line) {
     switch(errorType){
         case NO_FREE_SPACE:
-        fprintf(stderr, "ERROR: There is not enough free space for this Malloc request. Try a smaller size or Free'ing");
-        break;
-
+            fprintf(stderr, "ERROR: There is not enough free space for this Malloc request. Try a smaller size or Freeing\n");
+            break;
         case FREE_UNKN_PTR:
-        fprintf(stderr, "ERROR: Pointing to unknown Malloc address. Try another Pointer");
-        break;
-
+            fprintf(stderr, "ERROR: Pointing to unknown Malloc address. Try another Pointer\n");
+            break;
         case DOUBLE_FREE:
-        fprintf(stderr, "ERROR: Ptr already Freed. Cannot be Freed again");
-        break;
+            fprintf(stderr, "ERROR: Ptr already Freed. Cannot be Freed again\n");
+            break;
+        default:
+            fprintf(stderr, "ERROR: something happened\n");
+            break;
     }
 }
 
@@ -72,11 +73,11 @@ static void* bestfit(size_t size){
     //2's compliment representation of size_t (values cannot be negative therefor -1 is b i g)
     size_t min = -1;
 
-    for(void* i = (void*)&memory[0]; i < (void*)&memory[MEMLENGTH]; i = get_next(i)) {
+    for(void* i = (void*)&memory[0]; i < (void*)(&memory[MEMLENGTH] - 1); i = get_next(i)) {
         //condition 1. this chunk needs to fit the data we need
         //condition 2. this space is straight up free
         //condition 3. arbitrary max. if its less than arb then we set the max to that one and set the minimum that satisfies.
-        if (isFree(i) && (get_size(i) > size) && (get_size(i) < min)) {
+        if (isFree(i) && (get_size(i) >= size) && (get_size(i) < min)) {
             size = get_size(i);
             toreturn = i;
         }   
@@ -85,27 +86,35 @@ static void* bestfit(size_t size){
     return toreturn;
 }
 static void printheader(block_t* input){
-   //printf("At address %p\tsize: %zu\tisfree? %s\n",input,input->size,input->isFree == 0 ? "is free" : "is allocated");
+   printf("At address %p\tsize: %zu\tisfree? %s\n",input,input->size,input->isFree == 0 ? "is free" : "is allocated");
 }
 
-
+static void printmemory(){
+    for(void* i = memory; i < (void*)((&memory[MEMLENGTH]) - 1); i = get_next(i)){
+        printheader(i);
+    }
+    printf("address of heap done = %p\n",&memory[MEMLENGTH]);
+}
+static int i = 0; //solely for troubleshooting
+                  
 
 //public functions available to client
 void* mymalloc(size_t size, char *file, int line){
     size = (size + 7) & -8;
-   
+    if(i == 63){
+        printmemory();
+    }     
+    i++;
     if (memory[0] == 0) {
 
         block_t header = make_header(((MEMLENGTH*8)-sizeof(block_t)),0,&memory[MEMLENGTH],NULL);
         memcpy(&memory[0], &header, sizeof(header));
-        printheader((block_t*)&memory[0]);
     }
 
     void* destination = bestfit(size);
 
     //could we put this logic inside of best fit?
     if (destination == NULL) {
-        fprintf(stderr,"unsuccessful malloc D-:\n");        //implement error code for no valid memory location for malloc
         errorHandling(NO_FREE_SPACE,destination,size,file,line);
         return NULL;
     }
@@ -127,7 +136,7 @@ void* mymalloc(size_t size, char *file, int line){
     //copies our data to memory.
     void* ptr = memcpy(destination + sizeof(block_t) + newheader->size  ,&mynewheader,sizeof(block_t));
     newheader->next = (block_t*)ptr;
-    printf("malloc: address of destionation: %lu\n",destination);
+
     return (block_t*)destination + 1;
 }
 
@@ -138,7 +147,9 @@ void myfree(void* ptr, char* file, int line){
     //this syntax doesnt work but the idea is
     //errorhandling for double free
     block_t* temp = ((block_t*)ptr);
-    printf("free: address of destionation: %lu\n",(temp - 1));
+    if(ptr == NULL){
+        fprintf(stderr,"unable to free NULL pointer\n");
+    }
     if (isFree(temp)) {
         errorHandling(DOUBLE_FREE,ptr,0,file,line);
         return;
