@@ -45,6 +45,7 @@ static char isFree(void* ptr){
 
 //get next header node in array
 static void* get_next(void* ptr){
+   //printf("Next node = %lu\n",((block_t*)ptr)->next);
     return ((block_t*)ptr)->next;
 }
 
@@ -80,11 +81,11 @@ static void* bestfit(size_t size){
             toreturn = i;
         }   
     }
-    printf("best address found: %p\n",toreturn);
+   //printf("best address found: %lu\n",toreturn);
     return toreturn;
 }
 static void printheader(block_t* input){
-    printf("At address %p\tsize: %zu\tisfree? %s\n",input,input->size,input->isFree == 0 ? "is free" : "is allocated");
+   //printf("At address %p\tsize: %zu\tisfree? %s\n",input,input->size,input->isFree == 0 ? "is free" : "is allocated");
 }
 
 
@@ -119,11 +120,14 @@ void* mymalloc(size_t size, char *file, int line){
     //creating header after.
     block_t mynewheader;
     mynewheader.size = old_size - sizeof(block_t) - newheader->size;
-    printf("new size of header: %zu\n",mynewheader.size);
+   //printf("new size of header: %zu\n",mynewheader.size);
     mynewheader.next = tempnextheader;
     mynewheader.prev = newheader;
+    mynewheader.isFree = 0;
     //copies our data to memory.
-    size_t* new_index = newheader + 
+    void* ptr = memcpy(destination + sizeof(block_t) + newheader->size  ,&mynewheader,sizeof(block_t));
+    newheader->next = (block_t*)ptr;
+    printf("malloc: address of destionation: %lu\n",destination);
     return (block_t*)destination + 1;
 }
 
@@ -133,14 +137,21 @@ void* mymalloc(size_t size, char *file, int line){
 void myfree(void* ptr, char* file, int line){
     //this syntax doesnt work but the idea is
     //errorhandling for double free
-    if (((block_t*)ptr--)->isFree) {
+    block_t* temp = ((block_t*)ptr);
+    printf("free: address of destionation: %lu\n",(temp - 1));
+    if (isFree(temp)) {
         errorHandling(DOUBLE_FREE,ptr,0,file,line);
-        return 0;
+        return;
     }
     //or something along those lines
+    if(((block_t*)ptr - 1) < &memory[0] || (((block_t*)ptr) - 1) >= &memory[MEMLENGTH]){
+        fprintf(stderr,"ARE YOU IDOT!!! YOU NO FREEFREE D-:\n");    
+        return;
+    }
+    (temp - 1)->isFree = 0;
 
 
-
+    // (temp - 1)->isFree = 0;
 }
 
 // B#####################&&&&&&##BPP55PGBB#&&#BGGGGGBGGGGB5GGYGGPJG###B5B#####&#GB#&G??7GBPPGGB####GB###BGGGGGP?P&##B5B##PYB#GB#BG#####BGG5PBGB#BGG5G###B
