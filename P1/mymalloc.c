@@ -182,10 +182,7 @@ static void coalesce(block_t* ptr) {
 //public functions available to client
 void* mymalloc(size_t size, char *file, int line){
     size = (size + 7) & -8;
-    if(i == 63){
-        printmemory();
-    }     
-    i++;
+    
     if (memory[0] == 0) {
 
         block_t header = make_header(((MEMLENGTH*8)-sizeof(block_t)),0,&memory[MEMLENGTH],NULL);
@@ -217,7 +214,10 @@ void* mymalloc(size_t size, char *file, int line){
     //copies our data to memory.
     void* ptr = memcpy(destination + sizeof(block_t) + newheader->size  ,&mynewheader,sizeof(block_t));
     newheader->next = (block_t*)ptr;
-
+    if(i == 63){
+       printmemory();
+    }
+    i++;  
     return (block_t*)destination + 1;
 }
 
