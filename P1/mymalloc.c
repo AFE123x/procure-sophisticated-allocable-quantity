@@ -147,20 +147,24 @@ void myfree(void* ptr, char* file, int line){
     //this syntax doesnt work but the idea is
     //errorhandling for double free
     block_t* temp = ((block_t*)ptr);
+    //error checking for a non existent pointer
     if(ptr == NULL){
         fprintf(stderr,"unable to free NULL pointer\n");
     }
+    //error checking for freeing an already free block
     if (isFree(temp)) {
         errorHandling(DOUBLE_FREE,ptr,0,file,line);
         return;
     }
-    //or something along those lines
+    //error checking for going out of the bounds of the array
     if(((block_t*)ptr - 1) < &memory[0] || (((block_t*)ptr) - 1) >= &memory[MEMLENGTH]){
         fprintf(stderr,"ARE YOU IDOT!!! YOU NO FREEFREE D-:\n");    
         return;
     }
     (temp - 1)->isFree = 0;
 
+    //also need checking for if a pointer isnt a header at all.
+    //pointing within the bounds of the array but not towards a header.
 
     // (temp - 1)->isFree = 0;
 }
