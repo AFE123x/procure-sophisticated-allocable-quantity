@@ -31,7 +31,6 @@ void errorHandling (Errors errorType,void* ptr,size_t size,char *file, int line)
     }
 }
 
-
 //get the size of the header/node
 static size_t get_size(void* ptr){
     return ((block_t*)ptr)->size;
@@ -42,7 +41,6 @@ static char isFree(void* ptr){
     block_t* temp = (block_t*)ptr;
     return temp->isFree == 0;
 } 
-
 
 //get next header node in array
 static void* get_next(void* ptr){
@@ -64,6 +62,7 @@ static block_t make_header(int size, char isfree, void* next, void* prev){
     newhead.prev = prev;
     return newhead;
 }
+
 //finding best free block to use for malloc
 static void* bestfit(size_t size){
     
@@ -85,6 +84,7 @@ static void* bestfit(size_t size){
    //printf("best address found: %lu\n",toreturn);
     return toreturn;
 }
+
 static void printheader(block_t* input){
    printf("At address %p\tsize: %zu\tisfree? %s\n",input,input->size,input->isFree == 0 ? "is free" : "is allocated");
 }
@@ -96,7 +96,88 @@ static void printmemory(){
     printf("address of heap done = %p\n",&memory[MEMLENGTH]);
 }
 static int i = 0; //solely for troubleshooting
-                  
+
+////// kareems attempt at coalescing
+static void coalesce(block_t* ptr) {
+    // if (ptr->next == &memory[MEMLENGTH]) {
+        
+    // }
+
+    //simply check if the next for prev are null.
+    //if they are null immediately return because there is no coalescing to be done.
+    if (ptr->next == NULL || ptr ->next == &memory[MEMLENGTH]) {
+        printf("ptr->next == NULL || ptr ->next == &memory[MEMLENGTH]\n");
+        if (isFree(ptr) && isFree(ptr->prev)) {
+            //header to the left
+            block_t* leftHeader = ptr->prev;
+
+            leftHeader->next = &memory[MEMLENGTH];
+
+            //changing the size of header to the left to header on the left + original header + size of header
+            leftHeader->size = (leftHeader->size) + ((ptr->size)+sizeof(block_t));
+            return;
+        }
+        return;
+    }
+
+    //if previous node is null. it is implied it is the front of memory
+    if (ptr->prev == NULL || ptr ->next == &memory[0]) {
+        printf("ptr->prev == NULL || ptr ->next == &memory[0]\n");
+        //check if header to the right is free
+        if (isFree(ptr) && isFree(ptr->next)) {
+        
+            //header on the right
+            block_t* rightHeader = ptr->next;
+            //header on the right of the right
+            block_t* rightrightHeader = ptr->next->next;
+
+            //set node after next to original node
+            rightrightHeader->prev = ptr;
+            //set original node to point to node after next
+            ptr->next = rightrightHeader;
+
+            //make the size of the original node current size + next header + payload.
+            ptr->size = (ptr->size)+((rightHeader->size)+sizeof(block_t));
+
+            return;
+        }
+        return;
+    }
+
+
+    if (ptr->next != NULL && ptr->prev != NULL) {
+        printf("ptr->next != NULL && ptr->prev != NULL\n");
+        if ((ptr->prev)->isFree == 0) {
+            block_t* leftHeader = ptr->prev;
+            block_t* rightHeader = ptr->next;
+
+            leftHeader->next = rightHeader;
+            rightHeader->prev = leftHeader;
+            leftHeader->size = (leftHeader->size)+((ptr->size)+sizeof(block_t));
+            printf("ptr->left is free. coalescing to the left\n");
+        }
+        //what if the pointer after next is NULL or the end of the memory???
+        if ((ptr->next)->isFree == 0) {
+            block_t* rightHeader = ptr->next;
+            block_t* rightrightHeader = ptr->next->next;
+
+            ptr->next = rightrightHeader;
+            rightrightHeader->prev= ptr;
+            ptr->size=(ptr->size)+((rightHeader->size)+sizeof(block_t));
+            printf("ptr->right is free. coalescing to the right\n");
+        }
+
+
+        return;
+    }
+
+    //we should not need a check for if both headers to the left AND right are NULL because that shouldn't ever happen.
+    //but maybe I might implement it anyway
+
+    printf("Coalescing attempted but nothing happened\n");
+    return;
+}                  
+//////
 
 //public functions available to client
 void* mymalloc(size_t size, char *file, int line){
@@ -141,27 +222,32 @@ void* mymalloc(size_t size, char *file, int line){
 }
 
 
-
-
 void myfree(void* ptr, char* file, int line){
     //this syntax doesnt work but the idea is
     //errorhandling for double free
     block_t* temp = ((block_t*)ptr);
+
+    //error checking for going out of the bounds of the array
+    if(((block_t*)ptr - 1) < &memory[0] || (((block_t*)ptr) - 1) >= &memory[MEMLENGTH]){
+        fprintf(stderr,"ARE YOU IDOT!!! YOU NO FREEFREE D-:. Just give up. stop using my program\n");    
+        return;
+    }
+
     //error checking for a non existent pointer
     if(ptr == NULL){
         fprintf(stderr,"unable to free NULL pointer\n");
+        return;
     }
+
     //error checking for freeing an already free block
-    if (isFree(temp)) {
+    if (isFree(temp-1)) {
         errorHandling(DOUBLE_FREE,ptr,0,file,line);
         return;
     }
-    //error checking for going out of the bounds of the array
-    if(((block_t*)ptr - 1) < &memory[0] || (((block_t*)ptr) - 1) >= &memory[MEMLENGTH]){
-        fprintf(stderr,"ARE YOU IDOT!!! YOU NO FREEFREE D-:\n");    
-        return;
-    }
+
     (temp - 1)->isFree = 0;
+
+    coalesce(temp-1);
 
     //also need checking for if a pointer isnt a header at all.
     //pointing within the bounds of the array but not towards a header.
