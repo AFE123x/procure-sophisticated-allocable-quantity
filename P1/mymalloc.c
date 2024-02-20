@@ -132,6 +132,14 @@ static void coalesce(block_t* ptr) {
             //header on the right of the right
             block_t* rightrightHeader = ptr->next->next;
 
+            /////////////////////////////
+            if (rightHeader->next == NULL || rightHeader->next == &memory[MEMLENGTH]) {
+                ptr->next = NULL;
+                ptr->size = ((ptr->size)+((rightHeader->size)+sizeof(block_t)));                
+                return;
+            }
+            ////////////////////////////
+
             //set node after next to original node
             rightrightHeader->prev = ptr;
             //set original node to point to node after next
