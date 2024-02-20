@@ -21,10 +21,10 @@ int main(int argc, char **argv)
 	
 	// fill memory with objects
 	for (i = 0; i < OBJECTS; i++) {
-	    printf("at %d, we malloc\n",i);
         obj[i] = malloc(OBJSIZE);
-	}
-	
+	    printf("at %d, we malloc at address %lu\n",i,&obj[i]);
+    }
+    printf("loop!!!\n");	
 	// fill each object with distinct bytes
 	for (i = 0; i < OBJECTS; i++) {
 		memset(obj[i], i, OBJSIZE);

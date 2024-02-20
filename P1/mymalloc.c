@@ -72,11 +72,12 @@ static void* bestfit(size_t size){
     //2's compliment representation of size_t (values cannot be negative therefor -1 is b i g)
     size_t min = -1;
 
-    for(void* i = (void*)&memory[0]; i < (void*)(&memory[MEMLENGTH] - 1); i = get_next(i)) {
+    for(void* i = (void*)&memory[0]; i < (void*)&memory[MEMLENGTH - 1]; i = get_next(i)) {
         //condition 1. this chunk needs to fit the data we need
         //condition 2. this space is straight up free
         //condition 3. arbitrary max. if its less than arb then we set the max to that one and set the minimum that satisfies.
         if (isFree(i) && (get_size(i) >= size) && (get_size(i) < min)) {
+            printf("best fit so far is: %lu\n",i);
             size = get_size(i);
             toreturn = i;
         }   
@@ -86,14 +87,14 @@ static void* bestfit(size_t size){
 }
 
 static void printheader(block_t* input){
-   printf("At address %p\tsize: %zu\tisfree? %s\n",input,input->size,input->isFree == 0 ? "is free" : "is allocated");
+   printf("At address %lu\tsize: %zu\tisfree? %s\n",input,input->size,input->isFree == 0 ? "is free" : "is allocated");
 }
 
 static void printmemory(){
-    for(void* i = memory; i < (void*)((&memory[MEMLENGTH]) - 1); i = get_next(i)){
+    for(void* i = memory; i < (void*)&memory[MEMLENGTH - 1]; i = get_next(i)){
         printheader(i);
     }
-    printf("address of heap done = %p\n",&memory[MEMLENGTH]);
+    printf("address of heap done = %lu\n",&memory[MEMLENGTH - 1]);
 }
 static int i = 0; //solely for troubleshooting
 
@@ -105,13 +106,13 @@ static void coalesce(block_t* ptr) {
 
     //simply check if the next for prev are null.
     //if they are null immediately return because there is no coalescing to be done.
-    if (ptr->next == NULL || ptr ->next == &memory[MEMLENGTH]) {
-        printf("ptr->next == NULL || ptr ->next == &memory[MEMLENGTH]\n");
+    if (ptr->next == NULL || ptr ->next == (block_t*)&memory[MEMLENGTH]) {
+        printf("ptr->next == NULL || ptr ->next == (block_t*)&memory[MEMLENGTH]\n");
         if (isFree(ptr) && isFree(ptr->prev)) {
             //header to the left
             block_t* leftHeader = ptr->prev;
 
-            leftHeader->next = &memory[MEMLENGTH];
+            leftHeader->next = (block_t*)&memory[MEMLENGTH];
 
             //changing the size of header to the left to header on the left + original header + size of header
             leftHeader->size = (leftHeader->size) + ((ptr->size)+sizeof(block_t));
@@ -178,14 +179,13 @@ static void coalesce(block_t* ptr) {
     return;
 }                  
 //////
-
+//static int i = 0;
 //public functions available to client
 void* mymalloc(size_t size, char *file, int line){
     size = (size + 7) & -8;
-    
     if (memory[0] == 0) {
 
-        block_t header = make_header(((MEMLENGTH*8)-sizeof(block_t)),0,&memory[MEMLENGTH],NULL);
+        block_t header = make_header(((MEMLENGTH*8)-sizeof(block_t)),0,&memory[MEMLENGTH - 1],NULL);
         memcpy(&memory[0], &header, sizeof(header));
     }
 
@@ -212,12 +212,8 @@ void* mymalloc(size_t size, char *file, int line){
     mynewheader.prev = newheader;
     mynewheader.isFree = 0;
     //copies our data to memory.
-    void* ptr = memcpy(destination + sizeof(block_t) + newheader->size  ,&mynewheader,sizeof(block_t));
-    newheader->next = (block_t*)ptr;
-    if(i == 63){
-       printmemory();
-    }
-    i++;  
+    void* ptr = memcpy(destination + sizeof(block_t) + newheader->size - 1 ,&mynewheader,sizeof(block_t));
+    newheader->next = (block_t*)ptr;  
     return (block_t*)destination + 1;
 }
 
@@ -228,7 +224,8 @@ void myfree(void* ptr, char* file, int line){
     block_t* temp = ((block_t*)ptr);
 
     //error checking for going out of the bounds of the array
-    if(((block_t*)ptr - 1) < &memory[0] || (((block_t*)ptr) - 1) >= &memory[MEMLENGTH]){
+    printf("%p < %p || %p >= %p\n",(((block_t*)ptr) - 1),&memory[0],(((block_t*)ptr) - 1),&memory[MEMLENGTH]);
+    if((((block_t*)ptr) - 1) < &memory[0] || ((((block_t*)ptr) - 1) >= (block_t*)&memory[MEMLENGTH])){
         fprintf(stderr,"ARE YOU IDOT!!! YOU NO FREEFREE D-:. Just give up. stop using my program\n");    
         return;
     }
