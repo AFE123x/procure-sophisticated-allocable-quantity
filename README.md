@@ -1,84 +1,70 @@
-# procure-sophisticated-allocable-quantity
-*this is a repository that holds our custom malloc but everything below this line is fabricated*
-**Custom Malloc: Luxurious Allocator**
+Project: MyLittleMalloc
 
-Welcome to Custom Malloc - where memory allocation meets opulence and sophistication. This exquisite implementation of malloc surpasses mere functionality; it delivers a lavish experience for your memory allocation needs. Prepare to indulge in the epitome of elegance as you explore the unparalleled features and luxurious craftsmanship of our bespoke allocator.
+Due Date: 2/20/24 (11:59PM)
+
+*Participating Students: Arun (ajf277), Kareem(kkj47)*
+
+---
+### Background and Implementation
+The heap is a region of memory managed by the run-time system through two functions, malloc()
+and free(), which allocate and deallocate portions of the heap for use by client code.
+We will model the heap as a sequence of variably sized chunks, where a chunk is a contiguous
+sequence of bytes in the heap and all bytes in the heap belong to exactly one chunk. Each chunk has
+a size, which is the number of bytes it contains, and may be either allocated (in-use) or deallocated
+(free).
 
 ---
 
-### Features
+### What we have to do
+We have to implement a working malloc and free replacement.
 
-#### 1. Exquisite Memory Allocation
+the difference between our malloc and free is that it should be able to have error handling
 
-Custom Malloc provides memory allocation with unparalleled finesse and refinement. Each allocation is executed with precision and grace, ensuring optimal resource utilization and performance.
+the **Rules** our implementation must operate by are:
+1. On success, malloc() returns a pointer to the payload of an allocated chunk containing at
+least the requested number of bytes. The payload does not overlap any other allocated chunks.
+2. The run-time system makes no assumptions about the data written to the payload of a chunk.
+In particular, it cannot assume that certain special values are not written to the payload. In
+other words, the run-time cannot extract any information by looking at the payload of an
+allocated chunk. Conversely, clients may write to any byte received from malloc() without
+causing problems for the run-time system.
+3. The run-time system never writes to the payload of an allocated chunk. Client code may
+assume that data it writes to an object will remain, unchanged, until the object is explicitly
+freed.
+4. The run-time system never moves or resizes an allocated chunk. 1
+5. The client never reads or writes outside the boundaries of the allocated payloads it receives.
+The run-time system can assume that any data it writes to chunk headers or to the payloads
+of unallocated chunks will be not be read or updated by client code.
 
-#### 2. Tailored Fit
+#### Errors we have to detect
+- Calling free() with an address not obtained from malloc()
+- Calling free() with an address not at the start of a chunk
+- Calling free() a second time on the same pointer
+- Calling malloc() with a size of 0
+- Calling malloc() with a size that is to big
+- Calling malloc() with no more free space
 
-Like a finely tailored suit, Custom Malloc caters to the unique requirements of your memory allocation tasks. Whether it's small, medium, or large allocations, our allocator adapts seamlessly to provide a bespoke fit for every memory block.
 
-#### 3. Artisanal Fragmentation Management
+### Differences between our code
+with our implementation of malloc we use a full linked list struct with previous and next nodes for ease of implementation.
 
-Bid farewell to memory fragmentation woes with our artisanal fragmentation management techniques. Custom Malloc employs cutting-edge algorithms to minimize fragmentation and maintain the integrity of your memory space.
+because we are using this style of formatting for our structure, it ends up being (padded) to size 32. This size is more than wanted but because we have the nodes to point to previous and next it is a lot easier to get from header to header forwards and backwards.
 
-#### 4. Exceptional Performance
 
-Performance is paramount, and Custom Malloc delivers nothing short of excellence. With lightning-fast allocation and deallocation times, your applications will operate with unparalleled efficiency and grace.
 
----
 
-### Installation
 
-To savor the sophistication of Custom Malloc, follow these steps:
 
-1. Clone the repository: `git clone https://github.com/custom-malloc.git`
-2. Navigate to the project directory: `cd custom-malloc`
-3. Build the project using your preferred compiler.
-4. Link your application with the Custom Malloc library.
 
-```bash
-gcc -o your_program your_program.c custom_malloc.o -lm
-```
 
-5. Indulge in the elegance of Custom Malloc in your application.
 
----
 
-### Usage
 
-Using Custom Malloc is a decadent delight. Simply include the header file in your source code, and you're ready to experience memory allocation like never before.
 
-```c
-#include <custom_malloc.h>
 
-int main() {
-    // Allocate memory with style
-    void* ptr = custom_malloc(100 * sizeof(int));
-    
-    // Don't forget to free your memory, gracefully
-    custom_free(ptr);
-    
-    return 0;
-}
-```
+
 
 ---
-
-### Contribute
-
-Are you passionate about elegance and efficiency in memory management? Join us in refining the art of memory allocation by contributing to Custom Malloc. Your expertise and creativity are welcome additions to our luxurious ecosystem.
+### Mary (*netid to be added*) said this
 
 ---
-
-### Feedback
-
-We value your feedback as much as we value fine craftsmanship. Please share your thoughts, suggestions, or inquiries with us at custom-malloc@example.com. Your insights help us continue to elevate the standards of memory allocation excellence.
-
----
-
-### License
-
-Custom Malloc is licensed under the [Luxury License](https://github.com/custom-malloc/LICENSE). Feel free to use, modify, and distribute this masterpiece in accordance with the principles of elegance and refinement.
-
----
-
-#### Experience memory allocation redefined with Custom Malloc - where luxury meets efficiency. Bon appétit! 🎩🍷
