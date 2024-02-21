@@ -8,7 +8,6 @@
 // real one we need void *mymalloc(size_t size, char *file, int line);
 void* mymalloc(size_t size, char *file, int line);
 void  myfree(void *ptr, char *file, int line);
-
 /**
  * Our struct data.
  * size contains an 8 byte size.

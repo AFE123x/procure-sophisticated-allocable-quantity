@@ -2,8 +2,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
-
-
 // Compile with -DREALMALLOC to use the real malloc() instead of mymalloc()
 #ifndef REALMALLOC
 #include "mymalloc.h"
@@ -18,11 +16,14 @@ int main(int argc, char **argv)
 {
 	char *obj[OBJECTS];
 	int i, j, errors = 0;
-	
 	// fill memory with objects
-	for (i = 0; i < OBJECTS; i++) {
+	
+	for (i = 0; i < OBJECTS; i++){
+		int penis = OBJSIZE;
+		printf("OBJSIZE = %d\n",penis);
+		// printf("OBJSIZE = %d"\n,OBJSIZE);
+		printf("*********%d*********\n",i);
         obj[i] = malloc(OBJSIZE);
-	    printf("at %d, we malloc at address %lu\n",i,&obj[i]);
     }
     printf("loop!!!\n");	
 	// fill each object with distinct bytes
