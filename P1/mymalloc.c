@@ -178,6 +178,15 @@ static void coalesce(block_t* ptr) {
         return;
     }
 
+    if (ptr->next == NULL && ptr->prev == NULL) {
+        printf("ptr->next == NULL && ptr->prev == NULL\n");
+        printf("there are no valid headers to coalesce\n");
+        printf("making a header that spans memory\n");
+        ptr->isFree = 0;
+        block_t header = make_header(((MEMLENGTH*8)-sizeof(block_t)),0,&memory[MEMLENGTH - 1],NULL);
+        return;
+    }
+
     //we should not need a check for if both headers to the left AND right are NULL because that shouldn't ever happen.
     //but maybe I might implement it anyway
 
