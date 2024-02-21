@@ -131,16 +131,13 @@ printf("This is Test 4:\n");
         newptr[i] = i;
     }
     printf("at address %p, we have %c\n",newptr + 15 ,newptr[15]);
-    return 0;
-
-
 
 ////////////////////////////////
     gettimeofday(&end, NULL);
     float sum1=(end.tv_sec - start.tv_sec) * 10000000 ;
     float sum2=(end.tv_usec - start.tv_usec) * 0.000001;
     printf("Time taken for test 4: %f\n",sum1+sum2);
-
+    return 0;
 
 }
 
