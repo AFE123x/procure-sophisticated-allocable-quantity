@@ -1,100 +1,91 @@
-83
-86
-77
-15
-93
-35
-86
-92
-49
-21
-62
-27
-90
-59
-63
-26
-40
-26
-72
-36
-11
-68
-67
-29
-82
-30
-62
-23
-67
-35
-29
-2
-22
-58
-69
-67
-93
-56
-11
-42
-29
-73
-21
-19
-84
-37
-98
-24
-15
-70
-13
-26
-91
-80
-56
-73
-62
-70
-96
-81
-5
-25
-84
-27
-36
-5
-46
-29
-13
-57
-24
-95
-82
-45
-14
-67
-34
-64
-43
-50
-87
-8
-76
-78
-88
-84
-3
-51
-54
-99
-32
-60
-76
-68
-39
-12
-26
-86
-94
-39
+
+    //simply check if the next for prev are null.
+    //if they are null immediately return because there is no coalescing to be done.
+    if (ptr->next == NULL || ptr ->next == (block_t*)&memory[MEMLENGTH]) {
+        // printf("ptr->next == NULL || ptr ->next == (block_t*)&memory[MEMLENGTH]\n");
+        if (isFree(ptr) && isFree(ptr->prev)) {
+            //header to the left
+            block_t* leftHeader = ptr->prev;
+
+            leftHeader->next = (block_t*)&memory[MEMLENGTH];
+
+            //changing the size of header to the left to header on the left + original header + size of header
+            leftHeader->size = (leftHeader->size) + ((ptr->size)+sizeof(block_t));
+            return;
+        }
+        return;
+    }
+
+    //if previous node is null. it is implied it is the front of memory
+    if (ptr->prev == NULL || ptr ->next == (void*)&memory[0]) {
+        // printf("ptr->prev == NULL || ptr ->next == &memory[0]\n");
+        //check if header to the right is free
+        if (isFree(ptr) && isFree(ptr->next)) {
+        
+            //header on the right
+            block_t* rightHeader = ptr->next;
+            //header on the right of the right
+            block_t* rightrightHeader = ptr->next->next;
+
+            /////////////////////////////
+            if (rightHeader->next == NULL) {
+                ptr->next = NULL;
+                ptr->size = ((ptr->size)+((rightHeader->size)+sizeof(block_t)));                
+                return;
+            }
+            ////////////////////////////
+
+            //set node after next to original node
+            rightrightHeader->prev = ptr;
+            //set original node to point to node after next
+            ptr->next = rightrightHeader;
+
+            //make the size of the original node current size + next header + payload.
+            ptr->size = (ptr->size)+((rightHeader->size)+sizeof(block_t));
+
+            return;
+        }
+        return;
+    }
+
+
+    if (ptr->next != NULL && ptr->prev != NULL) {
+        // printf("ptr->next != NULL && ptr->prev != NULL\n");
+        if ((ptr->prev)->isFree == 0) {
+            block_t* leftHeader = ptr->prev;
+            block_t* rightHeader = ptr->next;
+
+            leftHeader->next = rightHeader;
+            rightHeader->prev = leftHeader;
+            leftHeader->size = (leftHeader->size)+((ptr->size)+sizeof(block_t));
+            // printf("ptr->left is free. coalescing to the left\n");
+        }
+        //what if the pointer after next is NULL or the end of the memory???
+        if ((ptr->next)->isFree == 0) {
+            block_t* rightHeader = ptr->next;
+            block_t* rightrightHeader = ptr->next->next;
+            printf("address of rightheader = %p\naddress if rightrightHeader = %p\nptr = %p\n",rightHeader,rightrightHeader,ptr);
+            ptr->next = rightrightHeader;
+            rightrightHeader->prev= ptr;
+            ptr->size=(ptr->size)+((rightHeader->size)+sizeof(block_t));
+            // printf("ptr->right is free. coalescing to the right\n");
+        }
+
+
+        return;
+    }
+
+    if (ptr->next == NULL && ptr->prev == NULL) {
+        printf("ptr->next == NULL && ptr->prev == NULL\n");
+        printf("there are no valid headers to coalesce\n");
+        printf("making a header that spans memory\n");
+        ptr->isFree = 0;
+        block_t header = make_header(((MEMLENGTH*8)-sizeof(block_t)),0,&memory[MEMLENGTH - 1],NULL);
+        return;
+    }
+
+    //we should not need a check for if both headers to the left AND right are NULL because that shouldn't ever happen.
+    //but maybe I might implement it anyway
+
+    // printf("Coalescing attempted but nothing happened\n");
+    return;

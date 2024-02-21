@@ -94,8 +94,8 @@ static void printmemory(){
         printheader(i);
     }
 }
-static int i = 0; //solely for troubleshooting
 
+<<<<<<< Updated upstream
 ////// kareems attempt at coalescing
 static void coalesce(block_t* ptr) {
 
@@ -145,9 +145,28 @@ static void coalesce(block_t* ptr) {
 
             return;
         }
+=======
+static void coalesce_right(block_t* ptr) {
+    if (ptr == NULL || ptr->next == NULL) {
         return;
     }
+    block_t* tempnext = ptr->next->next;
+    ptr->size = ptr->size + sizeof(block_t) + ptr->next->size;
+    ptr->next = tempnext;
+    if (tempnext != NULL) {
+        tempnext->prev = ptr;
+    }
+}
 
+static void coalesce_left(block_t* ptr) {
+    if (ptr == NULL || ptr->prev == NULL) {
+>>>>>>> Stashed changes
+        return;
+    }
+    coalesce_right(ptr->prev);
+}
+
+<<<<<<< Updated upstream
     if (ptr->next != NULL && ptr->prev != NULL) {
         // printf("ptr->next != NULL && ptr->prev != NULL\n");
         if ((ptr->prev)->isFree == 0) {
@@ -171,17 +190,18 @@ static void coalesce(block_t* ptr) {
         }
 
 
+=======
+static void coalesce(block_t* ptr) {
+    if (ptr == NULL) {
+>>>>>>> Stashed changes
         return;
     }
-
-    if (ptr->next == NULL && ptr->prev == NULL) {
-        printf("ptr->next == NULL && ptr->prev == NULL\n");
-        printf("there are no valid headers to coalesce\n");
-        printf("making a header that spans memory\n");
-        ptr->isFree = 0;
-        block_t header = make_header(((MEMLENGTH*8)-sizeof(block_t)),0,&memory[MEMLENGTH - 1],NULL);
+    if (ptr->prev != NULL && isFree(ptr->prev) && isFree(ptr)) {
+        printf("coalesce left %p\n",ptr);
+        coalesce_left(ptr);
         return;
     }
+<<<<<<< Updated upstream
 
     //we should not need a check for if both headers to the left AND right are NULL because that shouldn't ever happen.
     //but maybe I might implement it anyway
@@ -199,6 +219,20 @@ static void coalesce(block_t* ptr) {
 }                  
 //////
 //static int i = 0;
+=======
+    if (ptr->next != NULL && isFree(ptr->next) && isFree(ptr)) {
+        printf("coalesce right %p\n",ptr);
+        coalesce_right(ptr);
+        return;
+    }
+   // printf("Coalesce: Nothing to be done.\n");
+}
+static void final_coalesce(){
+    for(block_t* i = (block_t*)&memory[0]; i != NULL; i = get_next(i)){
+        coalesce(i);
+    }
+}
+>>>>>>> Stashed changes
 //public functions available to client
 void* mymalloc(size_t size, char *file, int line){
     size = (size + 7) & -8;
@@ -268,8 +302,17 @@ void myfree(void* ptr, char* file, int line){
 
     (temp - 1)->isFree = 0;
 
+<<<<<<< Updated upstream
     coalesce(temp-1);
+=======
+    // coalesce(temp-1);
+    printf("before coalesce\n");
     printmemory();
+    final_coalesce();
+    printf("after coalesce\n");
+>>>>>>> Stashed changes
+    printmemory();
+    
     //also need checking for if a pointer isnt a header at all.
     //pointing within the bounds of the array but not towards a header.
 

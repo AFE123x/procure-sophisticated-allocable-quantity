@@ -1,0 +1,46 @@
+best fit so far is: 0x55d256582040
+We're getting fault at 0x55d2565820b8 vs. 0x55d256583028
+best fit so far is: 0x55d2565820b8
+We're getting fault at 0x55d256582130 vs. 0x55d256583028
+best fit so far is: 0x55d256582130
+We're getting fault at 0x55d2565821a0 vs. 0x55d256583028
+best fit so far is: 0x55d2565821a0
+We're getting fault at 0x55d2565821d0 vs. 0x55d256583028
+best fit so far is: 0x55d2565821d0
+We're getting fault at 0x55d256582250 vs. 0x55d256583028
+**********ARRAY PRINT*****
+0x55d256582060
+0x55d2565820d8
+0x55d256582150
+0x55d2565821c0
+0x55d2565821f0
+**********ARRAY PRINT*****
+0x55d2565820d8
+0x55d256582060
+0x55d256582150
+0x55d2565821f0
+0x55d2565821c0
+*****FREE THING*******
+To free: 0x55d2565820d8
+At address 0x55d256582040       size: 88        isfree? is allocated, struct->next: 0x55d2565820b8
+At address 0x55d2565820b8       size: 88        isfree? is free, struct->next: 0x55d256582130
+At address 0x55d256582130       size: 80        isfree? is allocated, struct->next: 0x55d2565821a0
+At address 0x55d2565821a0       size: 16        isfree? is allocated, struct->next: 0x55d2565821d0
+At address 0x55d2565821d0       size: 96        isfree? is allocated, struct->next: 0x55d256582250
+At address 0x55d256582250       size: 3536      isfree? is free, struct->next: (nil)
+*****FREE THING*******
+To free: 0x55d256582060
+At address 0x55d256582040       size: 208       isfree? is free, struct->next: 0x55d256582130
+At address 0x55d256582130       size: 80        isfree? is allocated, struct->next: 0x55d2565821a0
+At address 0x55d2565821a0       size: 16        isfree? is allocated, struct->next: 0x55d2565821d0
+At address 0x55d2565821d0       size: 96        isfree? is allocated, struct->next: 0x55d256582250
+At address 0x55d256582250       size: 3536      isfree? is free, struct->next: (nil)
+*****FREE THING*******
+To free: 0x55d256582150
+At address 0x55d256582040       size: 320       isfree? is free, struct->next: 0x55d2565821a0
+At address 0x55d2565821a0       size: 16        isfree? is allocated, struct->next: 0x55d2565821d0
+At address 0x55d2565821d0       size: 96        isfree? is allocated, struct->next: 0x55d256582250
+At address 0x55d256582250       size: 3536      isfree? is free, struct->next: (nil)
+*****FREE THING*******
+To free: 0x55d2565821f0
+Segmentation fault
