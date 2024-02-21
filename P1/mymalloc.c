@@ -98,9 +98,7 @@ static int i = 0; //solely for troubleshooting
 
 ////// kareems attempt at coalescing
 static void coalesce(block_t* ptr) {
-    // if (ptr->next == &memory[MEMLENGTH]) {
-        
-    // }
+
 
     //simply check if the next for prev are null.
     //if they are null immediately return because there is no coalescing to be done.
@@ -118,7 +116,6 @@ static void coalesce(block_t* ptr) {
         }
         return;
     }
-
     //if previous node is null. it is implied it is the front of memory
     if (ptr->prev == NULL || ptr ->next == (void*)&memory[0]) {
         // printf("ptr->prev == NULL || ptr ->next == &memory[0]\n");
@@ -150,7 +147,6 @@ static void coalesce(block_t* ptr) {
         }
         return;
     }
-
 
     if (ptr->next != NULL && ptr->prev != NULL) {
         // printf("ptr->next != NULL && ptr->prev != NULL\n");
@@ -191,6 +187,14 @@ static void coalesce(block_t* ptr) {
     //but maybe I might implement it anyway
 
     // printf("Coalescing attempted but nothing happened\n");
+
+
+
+    /////////////////////////
+    if (ptr->prev == NULL) {
+        
+    }
+
     return;
 }                  
 //////
@@ -264,7 +268,7 @@ void myfree(void* ptr, char* file, int line){
 
     (temp - 1)->isFree = 0;
 
-    //coalesce(temp-1);
+    coalesce(temp-1);
     printmemory();
     //also need checking for if a pointer isnt a header at all.
     //pointing within the bounds of the array but not towards a header.
