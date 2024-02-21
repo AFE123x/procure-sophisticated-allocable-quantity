@@ -51,20 +51,26 @@ with our implementation of malloc we use a full linked list struct with previous
 because we are using this style of formatting for our structure, it ends up being (padded) to size 32. This size is more than wanted but because we have the nodes to point to previous and next it is a lot easier to get from header to header forwards and backwards.
 
 
+### Performance tests made
+There are 5 required tests that should be run on our code. 3 of which are provided:
+1. malloc() and immediately free() a 1-byte object, 120 times.
+2. Use malloc() to get 120 1-byte objects, storing the pointers in an array, then use free() to
+deallocate the chunks.
+3. Create an array of 120 pointers. Repeatedly make a random choice between allocating a 1-byte
+object and adding the pointer to the array and deallocating a previously allocated object (if
+any), until you have allocated 120 times. Deallocate any remaining objects.
+
+The final 2 were created by us:
+
+4. 
+5. ads 
+
+### The results of the tests
+
+1. 
+2. 
+3. 
+4. 
+5. 
 
 
-
-
-
-
-
-
-
-
-
-
-
----
-### Mary (*netid to be added*) said this
-
----
