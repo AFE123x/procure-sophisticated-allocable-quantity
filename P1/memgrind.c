@@ -43,16 +43,16 @@ printf("*************This is Test 1:\n");
 
 }
 float test2() {
-// 2. Use malloc() to get 120 1-byte objects, storing the pointers in an array, then use free() to deallocate the chunks.
+// 2. Use malloc() to get 102 1-byte objects, storing the pointers in an array, then use free() to deallocate the chunks.
 printf("*************This is Test 2:\n");
     struct timeval start, end;
     gettimeofday(&start, NULL);
 
-    char* ptrs[120];
-    for(int i = 0; i < 120; i++){
+    char* ptrs[101];
+    for(int i = 0; i < 101; i++){
         ptrs[i] = (char*)malloc(sizeof(char));
     }
-    for(int i = 0; i < 120; i++){
+    for(int i = 0; i < 101; i++){
         free(ptrs[i]);
     }
     gettimeofday(&end, NULL);
@@ -110,30 +110,46 @@ printf("*************This is Test 3:\n");
 
 }
 float test4() {
-//
+//malloc 101 times, free the odd pointers, then free all remaining pointers
+//then do it again but for evens
 printf("*************This is Test 4:\n");
     struct timeval start, end;
     gettimeofday(&start, NULL);
 ////////////////////////////////
-/*
-    int* ptr = (int*)malloc(sizeof(int));
-    *ptr = 0x01020304;
-    printf("at address %p, we have %d\n",ptr,*ptr);
-    int* ptr2 = (int*)malloc(sizeof(int) * REMREMREM);
-    for(int i = 0; i < REMREMREM; i++){
-        ptr2[i] = i;
-    }
-    printf("at address %p, we have %d\n",ptr2,*ptr2);
-    free(ptr);
-    free(ptr2);
-    char* newptr = (char*)malloc(sizeof(char) * REMREMREM);
-    for(int i = 0; i < REMREMREM; i++){
-        newptr[i] = i;
-    }
-    printf("at address %p, we have %c\n",newptr + 15 ,newptr[15]);
-*/
+    char* ptrarray[101];
 
+//malloc 1 byte 101 times
+    for(int i = 0; i < 101; i++){
+        ptrarray[i] = (char*)malloc(sizeof(char));
+    }
+//free the odd pointers
+    for(int i = 0; i < 101; i++){
+        if(i % 2 == 1){
+            free(ptrarray[i]);
+        }
+    }
+//then free all remaining pointers
+    for(int i = 0; i < 101; i++){
+        if(i % 2 == 0){
+            free(ptrarray[i]);
+        }
+    }
 
+for(int i = 0; i < 101; i++){
+        ptrarray[i] = (char*)malloc(sizeof(char));
+    }
+//free the even pointers
+    for(int i = 0; i < 101; i++){
+        if(i % 2 == 0){
+            free(ptrarray[i]);
+        }
+    }
+//then free all remaining pointers
+    for(int i = 0; i < 101; i++){
+        if(i % 2 == 1){
+            free(ptrarray[i]);
+        }
+    }
 
 ////////////////////////////////
     gettimeofday(&end, NULL);
@@ -187,8 +203,7 @@ printf("*************This is Test 5:\n");
 
 
 int main(int argc, char** argv){
-    //running each test... I could have also put the time structs here instead of inside the functions themselves
-    //I think
+    //going to have the functions loop multiple times to have an average time
     test1();
     test2();
     test3();
@@ -198,3 +213,23 @@ int main(int argc, char** argv){
     return 0;
 
 } 
+
+
+//for testing purposes
+/*
+    int* ptr = (int*)malloc(sizeof(int));
+    *ptr = 0x01020304;
+    printf("at address %p, we have %d\n",ptr,*ptr);
+    int* ptr2 = (int*)malloc(sizeof(int) * REMREMREM);
+    for(int i = 0; i < REMREMREM; i++){
+        ptr2[i] = i;
+    }
+    printf("at address %p, we have %d\n",ptr2,*ptr2);
+    free(ptr);
+    free(ptr2);
+    char* newptr = (char*)malloc(sizeof(char) * REMREMREM);
+    for(int i = 0; i < REMREMREM; i++){
+        newptr[i] = i;
+    }
+    printf("at address %p, we have %c\n",newptr + 15 ,newptr[15]);
+*/

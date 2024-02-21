@@ -55,15 +55,16 @@ because we are using this style of formatting for our structure, it ends up bein
 There are 5 required tests that should be run on our code. 3 of which are provided:
 1. malloc() and immediately free() a 1-byte object, 120 times.
 2. Use malloc() to get 120 1-byte objects, storing the pointers in an array, then use free() to
-deallocate the chunks.
+deallocate the chunks. Because our header is larger than average, we had to change the object amount from 120 to 101 objects to fit inside of our memory. Our memory is only 4096 bytes and with a header that is 40 bytes at smallest, an object count of 120 would need 4800 bytes. An object count of 101 would fit in our memory.
+
 3. Create an array of 120 pointers. Repeatedly make a random choice between allocating a 1-byte
 object and adding the pointer to the array and deallocating a previously allocated object (if
 any), until you have allocated 120 times. Deallocate any remaining objects.
 
 The final 2 were created by us:
 
-4. 
-5. ads 
+4. malloc() 101 1 byte objects, free the odd pointers, then free the even pointers. Then malloc() 101 more 1 byte objects then free the even pointers then free everything.
+5. hmmm what exactly IS a 5th test case 
 
 ### The results of the tests
 

@@ -4,7 +4,7 @@
 static double memory[MEMLENGTH];
 
 //enum for error handling
-//NO_FREE_SPACE = mallocing a size that is not valid/ there is no more spance
+//NO_FREE_SPACE = mallocing a size that is not valid/ there is no more space
 //FREE_UNKN_PTR = attempting to free a pointer that is not in the heap OR not directed at a header
 //DOUBLE_FREE = attempting to free a space that was already unallocated
 typedef enum {
