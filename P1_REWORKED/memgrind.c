@@ -67,8 +67,6 @@ float test3() {
 /*3. Create an array of 120 pointers. Repeatedly make a random choice between allocating a 1-byte
 object and adding the pointer to the array and deallocating a previously allocated object (if
 any), until you have allocated 120 times. Deallocate any remaining objects.*/
-//printf("*************This is Test 3:\n");
-
     struct timeval start, end;
     gettimeofday(&start, NULL);
 
@@ -129,14 +127,14 @@ float test4() {
             free(ptrarray[i]);
         }
     }
-    clienttrouble();
+    
 //then free all remaining pointers
     for(int i = 0; i < 100; i++){
         if(i % 2 == 0){
             free(ptrarray[i]);
         }
     }
-    clienttrouble();
+    
 
 for(int i = 0; i < 100; i++){
         ptrarray[i] = (char*)malloc(sizeof(char));
@@ -188,48 +186,6 @@ float test5(){
     return sum1 + sum2;
     
 }
-float oldtest5() {
-// 
-//printf("*************This is Test 5:\n");
-    struct timeval start, end;
-    gettimeofday(&start, NULL);
-////////////////////////////////
-
-    char* ptr1 = (char*)malloc(10);
-    if (ptr1 == NULL) {
-        printf("Error: Failed to allocate memory\n");
-        return 1;
-    }
-
-    char* ptr2 = (char*)malloc(20);
-    if (ptr2 == NULL) {
-        printf("Error: Failed to allocate memory\n");
-        return 1;
-    }
-
-    // Use the allocated memory
-    for (int i = 0; i < 10; ++i) {
-        ptr1[i] = 'A' + i;
-    }
-
-    for (int i = 0; i < 20; ++i) {
-        ptr2[i] = 'a' + i;
-    }
-
-    // Free the allocated memory
-    free(ptr1);
-    free(ptr2);
-
-////////////////////////////////
-    
-    gettimeofday(&end, NULL);
-    float sum1=(end.tv_sec - start.tv_sec) * 10000000 ;
-    float sum2=(end.tv_usec - start.tv_usec) * 0.000001;
-    //printf("*************Time taken for test 5: %f\n",sum1+sum2);
-
-    return sum1+sum2;
-}
-
 
 
 int main(int argc, char** argv){
