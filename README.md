@@ -31,7 +31,7 @@ causing problems for the run-time system.
 3. The run-time system never writes to the payload of an allocated chunk. Client code may
 assume that data it writes to an object will remain, unchanged, until the object is explicitly
 freed.
-4. The run-time system never moves or resizes an allocated chunk. 1
+4. The run-time system never moves or resizes an allocated chunk.
 5. The client never reads or writes outside the boundaries of the allocated payloads it receives.
 The run-time system can assume that any data it writes to chunk headers or to the payloads
 of unallocated chunks will be not be read or updated by client code.
@@ -46,20 +46,19 @@ of unallocated chunks will be not be read or updated by client code.
 
 
 ### Differences between our code
-with our implementation of malloc we use a full linked list struct with previous and next nodes for ease of implementation.
+With our implementation of malloc we use a full linked list struct with previous and next nodes for ease of implementation.
 
-because we are using this style of formatting for our structure, it ends up being (padded) to size 32. This size is more than wanted but because we have the nodes to point to previous and next it is a lot easier to get from header to header forwards and backwards.
+Because we are using this style of formatting for our structure, it ends up being (padded) to size 32. This size is more than wanted but because we have the nodes to point to previous and next it is a lot easier to get from header to header forwards and backwards.
 
 
 ### Performance tests made
 There are 5 required tests that should be run on our code. 3 of which are provided:
 1. malloc() and immediately free() a 1-byte object, 120 times.
 2. Use malloc() to get 120 1-byte objects, storing the pointers in an array, then use free() to
-deallocate the chunks. Because our header is larger than average, we had to change the object amount from 120 to 101 objects to fit inside of our memory. Our memory is only 4096 bytes and with a header that is 40 bytes at smallest, an object count of 120 would need 4800 bytes. An object count of 101 would fit in our memory.
+deallocate the chunks. **NOTE:** Because our header is larger than average (32 Bytes), we had to change the object amount from 120 to 101 objects to fit inside of our memory. Our memory is only 4096 bytes and with a header that is 40 bytes at smallest, an object count of 120 would need 4800 bytes. An object count of 101 would fit in our memory.
 
 3. Create an array of 120 pointers. Repeatedly make a random choice between allocating a 1-byte
-object and adding the pointer to the array and deallocating a previously allocated object (if
-any), until you have allocated 120 times. Deallocate any remaining objects.
+object and adding the pointer to the array and deallocating a previously allocated object (if any), until you have allocated 120 times. Deallocate any remaining objects.
 
 The final 2 were created by us:
 
