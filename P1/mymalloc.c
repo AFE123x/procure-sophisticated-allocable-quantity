@@ -85,15 +85,15 @@ static void* bestfit(size_t size){
     return toreturn;
 }
 
- static void printheader(block_t* input){
-  //printf("At address %p\tsize: %zu\tisfree? %s, struct->next: %p\n",input,input->size,input->isFree == 0 ? "is free" : "is allocated",input->next);
-}
+//  static void printheader(block_t* input){
+//   //printf("At address %p\tsize: %zu\tisfree? %s, struct->next: %p\n",input,input->size,input->isFree == 0 ? "is free" : "is allocated",input->next);
+// }
 //change back to static
-static void printmemory(){
-    for(void* i = &memory; i != (void*)NULL; i = get_next(i)){
-        printheader(i);
-    }
-}
+// static void printmemory(){
+//     for(void* i = &memory; i != (void*)NULL; i = get_next(i)){
+//         printheader(i);
+//     }
+// }
 
 
 static void coalesce_right(block_t* ptr) {
@@ -181,24 +181,33 @@ void* mymalloc(size_t size, char *file, int line){
     return (block_t*)destination + 1;
 }
 
+// char isValidHeader(block_t* header) {
+//     //block_t* i;
+//     // for (i = (block_t*)&memory[0]; i < header; i = get_next(i)) {
+//     // }
+//     return 0;
+// }
 
 void myfree(void* ptr, char* file, int line){
     //this syntax doesnt work but the idea is
     //errorhandling for double free
     block_t* temp = ((block_t*)ptr);
 
-    //error checking for going out of the bounds of the array
-    ////printf("%p < %p || %p >= %p\n",(((block_t*)ptr) - 1),&memory[0],(((block_t*)ptr) - 1),&memory[MEMLENGTH]);
-    if((((block_t*)ptr) - 1) < (block_t*)&memory[0] || ((((block_t*)ptr) - 1) >= (block_t*)&memory[MEMLENGTH])){
-        fprintf(stderr,"ARE YOU IDOT!!! YOU NO FREEFREE D-:. Just give up. stop using my program\n");    
+    //error checking for a non existent pointer
+    if(ptr == NULL){
+        //fprintf(stderr,"unable to free NULL pointer\n");
+        errorHandling(FREE_UNKN_PTR,ptr,0,file,line);
         return;
     }
 
-    //error checking for a non existent pointer
-    if(ptr == NULL){
-        fprintf(stderr,"unable to free NULL pointer\n");
+    //error checking for going out of the bounds of the array
+    ////printf("%p < %p || %p >= %p\n",(((block_t*)ptr) - 1),&memory[0],(((block_t*)ptr) - 1),&memory[MEMLENGTH]);
+    if((((block_t*)ptr) - 1) < (block_t*)&memory[0] || ((((block_t*)ptr) - 1) >= (block_t*)&memory[MEMLENGTH])){
+        //fprintf(stderr,"ARE YOU IDOT!!! YOU NO FREEFREE D-:. Just give up. stop using my program\n");    
+        errorHandling(NO_FREE_SPACE,ptr,0,file,line);
         return;
     }
+
 
     //error checking for freeing an already free block
     if (isFree(temp-1)) {
@@ -212,10 +221,10 @@ void myfree(void* ptr, char* file, int line){
 
     // coalesce(temp-1);
    //printf("before coalesce\n");
-    printmemory();
+    //printmemory();
     final_coalesce();
    //printf("after coalesce\n");
-    printmemory();
+    //printmemory();
     
     //also need checking for if a pointer isnt a header at all.
     //pointing within the bounds of the array but not towards a header.
