@@ -70,11 +70,11 @@ The final 2 were created by us:
 
 ### The average results of the tests
 
-1. seconds
-2. seconds
-3. seconds
-4. seconds
-5. seconds
+1. 0.000001 seconds
+2. 0.000029 seconds
+3. 0.000000 seconds
+4. 0.000084 seconds
+5. 0.000000 seconds
 
 
 

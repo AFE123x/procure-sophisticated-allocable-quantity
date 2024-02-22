@@ -21,5 +21,3 @@ cleanall: memgrind memtest
 	rm memtest
 	rm memgrind
 
-# the command I ran for testing on 2/20/24: \
-gcc mymalloc.c memgrind.c -g -O2 -fsanitize=address,undefined -o memgrinding
