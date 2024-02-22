@@ -20,8 +20,8 @@ int main(int argc, char **argv)
 	
 	for (i = 0; i < OBJECTS; i++){
 		int penis = OBJSIZE;
-		// pr		
-		intf("OBJSIZE = %d\n",penis);
+				
+		//printf("OBJSIZE = %d\n",penis);
 		// printf("OBJSIZE = %d"\n,OBJSIZE);
 		// printf("*********%d*********\n",i);
         obj[i] = malloc(OBJSIZE);

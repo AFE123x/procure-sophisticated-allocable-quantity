@@ -28,7 +28,7 @@ Test 4: Two more stress tests of your design. Document these in your README.
 
 float test1() {
 // Test 1: malloc() and immediately free() a 1-byte object, 120 times.
-printf("*************This is Test 1:\n");
+//printf("*************This is Test 1:\n");
     struct timeval start, end;
     gettimeofday(&start, NULL);
     for(int i = 0; i < 120; i++){
@@ -39,12 +39,12 @@ printf("*************This is Test 1:\n");
     float sum1=(end.tv_sec - start.tv_sec) * 10000000 ;
 	float sum2=(end.tv_usec - start.tv_usec) * 0.000001;
     printf("*************Time taken for test 1: %f\n",sum1+sum2);
-    return 0;
+    return sum1+sum2;
 
 }
 float test2() {
 // 2. Use malloc() to get 102 1-byte objects, storing the pointers in an array, then use free() to deallocate the chunks.
-printf("*************This is Test 2:\n");
+//printf("*************This is Test 2:\n");
     struct timeval start, end;
     gettimeofday(&start, NULL);
 
@@ -59,14 +59,14 @@ printf("*************This is Test 2:\n");
     float sum1=(end.tv_sec - start.tv_sec) * 10000000 ;
     float sum2=(end.tv_usec - start.tv_usec) * 0.000001;
     printf("*************Time taken for test 2: %f\n",sum1+sum2);
-    return 0;
+    return sum1+sum2;
 
 }
 float test3() {
 /*3. Create an array of 120 pointers. Repeatedly make a random choice between allocating a 1-byte
 object and adding the pointer to the array and deallocating a previously allocated object (if
 any), until you have allocated 120 times. Deallocate any remaining objects.*/
-printf("*************This is Test 3:\n");
+//printf("*************This is Test 3:\n");
 
     struct timeval start, end;
     gettimeofday(&start, NULL);
@@ -106,13 +106,13 @@ printf("*************This is Test 3:\n");
     float sum1=(end.tv_sec - start.tv_sec) * 10000000 ;
     float sum2=(end.tv_usec - start.tv_usec) * 0.000001;
     printf("*************Time taken for test 3: %f\n",sum1+sum2);
-    return 0;
+    return sum1+sum2;
 
 }
 float test4() {
 //malloc 101 times, free the odd pointers, then free all remaining pointers
 //then do it again but for evens
-printf("*************This is Test 4:\n");
+//printf("*************This is Test 4:\n");
     struct timeval start, end;
     gettimeofday(&start, NULL);
 ////////////////////////////////
@@ -156,13 +156,37 @@ for(int i = 0; i < 101; i++){
     float sum1=(end.tv_sec - start.tv_sec) * 10000000 ;
     float sum2=(end.tv_usec - start.tv_usec) * 0.000001;
     printf("*************Time taken for test 4: %f\n",sum1+sum2);
-    return 0;
+    return sum1+sum2;
 
 }
+float test5(){
+    struct timeval start, end;
+    gettimeofday(&start,NULL);
 
-float test5() {
+    double* ptr[1000];
+    int i = 0;
+    ptr[0] == malloc(sizeof(double));
+    while(ptr[i] != NULL){
+        ptr[++i] = malloc(sizeof(double));
+    }
+    i--;
+    int j = 0;
+    while(j < i){
+        free(ptr[i]);
+        free(ptr[j]);
+        j++;
+        i--;
+    }
+    gettimeofday(&end,NULL);
+    float sum1 = (end.tv_sec - start.tv_sec) * 10000000;
+    float sum2 = (end.tv_usec - start.tv_usec) * 0.000001;
+    printf("**********TIME TAKEN FOR TEST 5: %f\n",sum1+sum2);
+    return sum1 + sum2;
+    
+}
+float oldtest5() {
 // 
-printf("*************This is Test 5:\n");
+//printf("*************This is Test 5:\n");
     struct timeval start, end;
     gettimeofday(&start, NULL);
 ////////////////////////////////
@@ -193,22 +217,45 @@ printf("*************This is Test 5:\n");
     free(ptr2);
 
 ////////////////////////////////
+    
     gettimeofday(&end, NULL);
     float sum1=(end.tv_sec - start.tv_sec) * 10000000 ;
     float sum2=(end.tv_usec - start.tv_usec) * 0.000001;
-    printf("*************Time taken for test 5: %f\n",sum1+sum2);
+    //printf("*************Time taken for test 5: %f\n",sum1+sum2);
 
+    return sum1+sum2;
 }
 
 
 
 int main(int argc, char** argv){
     //going to have the functions loop multiple times to have an average time
-    test1();
-    test2();
-    test3();
-    test4();
-    test5();
+    //test best of 3
+    float sum = 0.0;
+    for(int i = 0; i < 3; i++){
+        sum += test1();
+    }
+    printf("*******************TIME FOR TEST 1: %f***********************\n",sum/3.0);
+    sum = 0.0;
+    for(int i = 0; i < 3; i++){
+    sum += test2();
+    }
+    printf("******************TIME FOR TEST 2: %f************************\n",sum/3.0);
+    sum = 0.0;
+    for(int i = 0; i < 3; i++){
+    sum += test3();
+    }
+    printf("*****************TIME FOR TEST 3: %f*************************\n",sum/3.0);
+    sum = 0.0;
+    for(int i = 0; i < 3; i++){
+    sum += test4();
+    }
+    printf("****************TIME FOR TEST 4: %f***************************\n",sum/3.0);
+    sum = 0.0;
+    for(int i = 0; i < 3; i++){
+    sum +=test5();
+    }
+    printf("***************TIME FOR TEST 5: %f****************************\n",sum/3.0);
 
     return 0;
 
@@ -230,6 +277,6 @@ int main(int argc, char** argv){
     char* newptr = (char*)malloc(sizeof(char) * REMREMREM);
     for(int i = 0; i < REMREMREM; i++){
         newptr[i] = i;
-    }
+    
     printf("at address %p, we have %c\n",newptr + 15 ,newptr[15]);
 */
