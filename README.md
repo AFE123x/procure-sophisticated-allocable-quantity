@@ -64,14 +64,14 @@ any), until you have allocated 120 times. Deallocate any remaining objects.
 The final 2 were created by us:
 
 4. malloc() 101 1 byte objects, free the odd pointers, then free the even pointers. Then malloc() 101 more 1 byte objects then free the even pointers then free everything.
-5. hmmm what exactly IS a 5th test case 
+5. malloc() all of the memory and then free it all. but free from the edges inwards
 
-### The results of the tests
+### The average results of the tests
 
-1. 
-2. 
-3. 
-4. 
-5. 
+1. 0.000006 seconds
+2. 0.000095 seconds
+3. 0.000018 seconds
+4. 0.000239 seconds
+5. 0.000001 seconds
 
 

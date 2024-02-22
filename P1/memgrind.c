@@ -1,3 +1,4 @@
++
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -22,7 +23,10 @@ Test 3: Create an array of 120 pointers. Repeatedly make a random choice between
 object and adding the pointer to the array and deallocating a previously allocated object (if
 any), until you have allocated 120 times. Deallocate any remaining objects
 
-Test 4: Two more stress tests of your design. Document these in your README.
+Test 4: malloc() 101 times, free the odd pointers, then free all remaining pointers. Then do the process again but for evens.
+
+Test 5: malloc() all of the memory and then free it all. but free from the edges inwards
+
 
 */
 
@@ -38,7 +42,7 @@ float test1() {
     gettimeofday(&end, NULL);
     float sum1=(end.tv_sec - start.tv_sec) * 10000000 ;
 	float sum2=(end.tv_usec - start.tv_usec) * 0.000001;
-    printf("*************Time taken for test 1: %f\n",sum1+sum2);
+    //printf("*************Time taken for test 1: %f\n",sum1+sum2);
     return sum1+sum2;
 
 }
@@ -58,7 +62,7 @@ float test2() {
     gettimeofday(&end, NULL);
     float sum1=(end.tv_sec - start.tv_sec) * 10000000 ;
     float sum2=(end.tv_usec - start.tv_usec) * 0.000001;
-    printf("*************Time taken for test 2: %f\n",sum1+sum2);
+    //printf("*************Time taken for test 2: %f\n",sum1+sum2);
     return sum1+sum2;
 
 }
@@ -105,7 +109,7 @@ any), until you have allocated 120 times. Deallocate any remaining objects.*/
     gettimeofday(&end, NULL);
     float sum1=(end.tv_sec - start.tv_sec) * 10000000 ;
     float sum2=(end.tv_usec - start.tv_usec) * 0.000001;
-    printf("*************Time taken for test 3: %f\n",sum1+sum2);
+    //printf("*************Time taken for test 3: %f\n",sum1+sum2);
     return sum1+sum2;
 
 }
@@ -155,11 +159,12 @@ for(int i = 0; i < 101; i++){
     gettimeofday(&end, NULL);
     float sum1=(end.tv_sec - start.tv_sec) * 10000000 ;
     float sum2=(end.tv_usec - start.tv_usec) * 0.000001;
-    printf("*************Time taken for test 4: %f\n",sum1+sum2);
+    //printf("*************Time taken for test 4: %f\n",sum1+sum2);
     return sum1+sum2;
 
 }
 float test5(){
+    //malloc() all of the memory and then free it all. but free from the edges inwards
     struct timeval start, end;
     gettimeofday(&start,NULL);
 
@@ -180,7 +185,7 @@ float test5(){
     gettimeofday(&end,NULL);
     float sum1 = (end.tv_sec - start.tv_sec) * 10000000;
     float sum2 = (end.tv_usec - start.tv_usec) * 0.000001;
-    printf("**********TIME TAKEN FOR TEST 5: %f\n",sum1+sum2);
+    //printf("**********TIME TAKEN FOR TEST 5: %f\n",sum1+sum2);
     return sum1 + sum2;
     
 }
@@ -235,27 +240,27 @@ int main(int argc, char** argv){
     for(int i = 0; i < 3; i++){
         sum += test1();
     }
-    printf("*******************TIME FOR TEST 1: %f***********************\n",sum/3.0);
+    printf("*****************AVERAGE TIME FOR TEST 1: %f***********************\n",sum/3.0);
     sum = 0.0;
     for(int i = 0; i < 3; i++){
     sum += test2();
     }
-    printf("******************TIME FOR TEST 2: %f************************\n",sum/3.0);
+    printf("*****************AVERAGE TIME FOR TEST 2: %f************************\n",sum/3.0);
     sum = 0.0;
     for(int i = 0; i < 3; i++){
     sum += test3();
     }
-    printf("*****************TIME FOR TEST 3: %f*************************\n",sum/3.0);
+    printf("*****************AVERAGE TIME FOR TEST 3: %f*************************\n",sum/3.0);
     sum = 0.0;
     for(int i = 0; i < 3; i++){
     sum += test4();
     }
-    printf("****************TIME FOR TEST 4: %f***************************\n",sum/3.0);
+    printf("*****************AVERAGE TIME FOR TEST 4: %f***************************\n",sum/3.0);
     sum = 0.0;
     for(int i = 0; i < 3; i++){
     sum +=test5();
     }
-    printf("***************TIME FOR TEST 5: %f****************************\n",sum/3.0);
+    printf("*****************AVERAGE TIME FOR TEST 5: %f****************************\n",sum/3.0);
 
     return 0;
 
