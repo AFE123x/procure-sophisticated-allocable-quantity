@@ -1,17 +1,14 @@
-+
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include <assert.h>
 #include <sys/types.h>
+#include <sys/time.h>
 #include <time.h>
-#include <sys/time.h>
 #include <errno.h>
-#include "mymalloc.h"
-#include <sys/time.h>
 #include <stdlib.h>
 #include <math.h>
+#include "mymalloc.h"
 #define REMREMREM 30
 /*
 Test 1: malloc() and immediately free() a 1-byte object, 120 times.
