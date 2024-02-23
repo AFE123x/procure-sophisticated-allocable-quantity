@@ -50,7 +50,7 @@ We use a struct for our metadata. The metadata we contain are the size_t for our
 
 For finding where to put our mallocs, we use first fit. So whatever the first block is that allows for space, we use the space for malloc.
 
-the files: test.c, test, and client.c are only in the files for our testing purposes. they are not included in our makefile
+**NOTE** The files: test.c, test, and client.c are only in the files for our testing purposes. they are not included in our makefile. You can ignore them.
 
 **NOTE** When running the makefile there is warnings- these can be ignored. The program runs successfully
 
