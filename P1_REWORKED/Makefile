@@ -1,23 +1,46 @@
-memgrind: mymalloc.o memgrind.o
-	gcc -o memgrind -g -Wall -std=c99 -fsanitize=address -fsanitize=undefined -Wvla mymalloc.o memgrind.o -O2 
-memtest: mymalloc.o memtest.o
-	gcc -o memtest -g -Wall -std=c99 -fsanitize=address -fsanitize=undefined -Wvla mymalloc.o memtest.o -O2
-mymalloc.o: mymalloc.c
-	gcc -c -g -Wall -std=c99 -fsanitize=address -fsanitize=undefined -Wvla  mymalloc.c -O2
-memgrind.o: memgrind.c
-	gcc -c -g -Wall -std=c99 -fsanitize=address -fsanitize=undefined -Wvla memgrind.c -O2
-memtest.o: memtest.c
-	gcc -c -g -Wall -std=c99 -fsanitize=address -fsanitize=undefined -Wvla memtest.c -O2
-cleanmemgrind: memgrind
-	rm memgrind.o
-	rm mymalloc.o
-	rm memgrind
-cleanmemtest: memtest
-	rm memtest.o
-	rm mymalloc.o
-	rm mytest
-cleanall: memgrind memtest
-	rm *.o
-	rm memtest
-	rm memgrind
+# Compiler and flags
+CC = gcc
+CFLAGS = -g -Wall -std=c99 -fsanitize=address -fsanitize=undefined -Wvla -O2
 
+# Targets and files
+TARGETS = memgrind memtest
+OBJS = mymalloc.o memgrind.o memtest.o
+EXEC = memgrind memtest
+
+# Default target
+all: $(TARGETS)
+
+# Build memgrind
+memgrind: mymalloc.o memgrind.o
+	$(CC) -o $@ $(CFLAGS) mymalloc.o memgrind.o
+
+# Build memtest
+memtest: mymalloc.o memtest.o
+	$(CC) -o $@ $(CFLAGS) mymalloc.o memtest.o
+
+# Compile mymalloc.o
+mymalloc.o: mymalloc.c
+	$(CC) -c $(CFLAGS) mymalloc.c
+
+# Compile memgrind.o
+memgrind.o: memgrind.c
+	$(CC) -c $(CFLAGS) memgrind.c
+
+# Compile memtest.o
+memtest.o: memtest.c
+	$(CC) -c $(CFLAGS) memtest.c
+
+# Clean up files
+clean:
+	rm -f $(OBJS) $(EXEC)
+
+# Clean specific targets
+cleanmemgrind: memgrind
+	rm -f memgrind.o mymalloc.o memgrind
+
+cleanmemtest: memtest
+	rm -f memtest.o mymalloc.o memtest
+
+# Clean all targets
+cleanall: clean
+	rm -f memtest memgrind
